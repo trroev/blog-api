@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Comment = require("./comment");
 const { DateTime } = require("luxon");
 
-const postSchema = new mongoose.Schema({
+const PostSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -32,10 +32,10 @@ const postSchema = new mongoose.Schema({
   },
 });
 
-postSchema.virtual("post_date_formatted").get(function () {
+PostSchema.virtual("post_date_formatted").get(function () {
   return DateTime.fromJSDate(this.createdAt).toLocaleString(
     DateTime.DATETIME_MED
   );
 });
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Post", PostSchema);
