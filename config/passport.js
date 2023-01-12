@@ -1,7 +1,7 @@
 const passport = require("passport");
-const LocalStrategy = require("passport-jwt").Strategy;
-const JwtStrategy = require("passport-jwt").Strategy,
-  ExtractJwt = require("passport-jwt").ExtractJwt;
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const Admin = require("../models/admin");
 
 const secret = process.env.SECRET_KEY;
 const jwtOptions = {
@@ -9,11 +9,15 @@ const jwtOptions = {
   secretOrKey: secret,
 };
 
-module.exports = new JwtStrategy(jwtOptions, (payload, done) => {
+const strategy = new JwtStrategy(jwtOptions, (payload, done) => {
   // verify the payload and call the done callback with the admin object
-  Admin.findById(payload.userId, (err, admin) => {
+  Admin.findById(payload.adminId, (err, admin) => {
     if (err) return done(err);
     if (!admin) return done(null, false);
     done(null, admin);
   });
 });
+
+passport.use(strategy);
+
+module.exports = passport;

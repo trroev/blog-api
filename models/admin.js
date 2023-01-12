@@ -19,20 +19,16 @@ AdminSchema.pre("save", async function (next) {
   const admin = this;
   if (admin.isModified("password")) {
     const salt = await bcrypt.genSaltSync(SALT_ROUNDS);
-    const hashedPassword = await bcrypt.hashSync(
-      admin.password,
-      salt
-    );
+    const hashedPassword = await bcrypt.hash(admin.password, salt);
     admin.password = hashedPassword;
   }
   next();
 });
 
 // compare hashed password
-AdminSchema.methods.isValidPassword = async function (password) {
+AdminSchema.methods.isValidPassword = function (password) {
   const admin = this;
-  const compare = await bcrypt.compare(password, admin.password);
-  return compare;
+  return bcrypt.compareSync(password, admin.password);
 };
 
 module.exports = mongoose.model("Admin", AdminSchema);
