@@ -34,20 +34,63 @@ exports.create_post = [
       }
       console.log("Saved post to the database:", post);
       // successful - return the created post to the client
-      res.json(post);
+      res.status(200).json(post);
     });
   },
 ];
 
-// get all posts
+// retrieve all posts
 exports.get_posts = (req, res, next) => {
   Post.find()
-    .sort([["createdAt", "ascending"]])
+    .sort([["createdAt", "descending"]])
     .exec((err, list_posts) => {
       if (err) {
         return next(err);
       }
       // successful, return JSON object of all posts
-      res.json(list_posts);
+      res.status(200).json(list_posts);
     });
 };
+
+// retrieve specific post by ID
+exports.get_post = (req, res, next) => {
+  Post.findById(req.params.id).exec((err, post) => {
+    if (err) {
+      return next(err);
+    }
+    if (post == null) {
+      return res
+        .status(404)
+        .json({ err: `post with id ${req.params.id} not found` });
+    }
+    // successful, return JSON object of specific post
+    res.status(200).json(post);
+  });
+};
+
+// PUT update a specific post by its ID
+exports.update_post = (req, res, next) => {
+  Post.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true },
+    (err, post) => {
+      if (err) {
+        return next(err);
+      }
+      if (post == null) {
+        return res
+          .status(404)
+          .json({ err: `post with id ${req.params.id} not found` });
+      }
+      // successful - return JSON object of the updated post
+      res.status(200).json(post);
+    }
+  );
+};
+
+// DELETE a specific post by its ID
+
+// GET - retrieve a list of all published or unpublished posts
+
+// GET - retrieve a list of all posts sorted by a specific field (e.g. title, date)
