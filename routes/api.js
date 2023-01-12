@@ -24,7 +24,10 @@ router.get("/posts", post_controller.get_posts);
 router.get("/posts/:id", post_controller.get_post);
 
 // PUT request for updating a specific post based on ID
-router.put("/posts/:id", post_controller.update_post);
+router.put("/posts/:id/update", post_controller.update_post);
+
+// POST request to delete a specific post based on ID
+router.delete("/posts/:id/delete", post_controller.delete_post);
 
 router.post("/login", admin_controller.login);
 

@@ -58,7 +58,7 @@ exports.get_post = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    if (post == null) {
+    if (!post) {
       return res
         .status(404)
         .json({ err: `post with id ${req.params.id} not found` });
@@ -78,7 +78,7 @@ exports.update_post = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      if (post == null) {
+      if (!post) {
         return res
           .status(404)
           .json({ err: `post with id ${req.params.id} not found` });
@@ -90,6 +90,22 @@ exports.update_post = (req, res, next) => {
 };
 
 // DELETE a specific post by its ID
+exports.delete_post = (req, res, next) => {
+  Post.findByIdAndRemove(req.params.id, (err, post) => {
+    if (err) {
+      return next(err);
+    }
+    if (!post) {
+      return res
+        .status(404)
+        .json({ err: `post with id ${req.params.id} not found` });
+    }
+    // successful - return JSON message indicating post was deleted
+    res.status(200).json({
+      msg: `post ${req.params.id} was successfully deleted`,
+    });
+  });
+};
 
 // GET - retrieve a list of all published or unpublished posts
 
