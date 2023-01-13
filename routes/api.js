@@ -39,7 +39,16 @@ router.delete("/posts/:id/delete", post_controller.delete_post);
 router.post("/posts/:id/comments", comment_controller.create_comment);
 
 // GET request to retrieve all comments for a specific blog post
-router.get("/posts/:id/comments", comment_controller.get_comments);
+router.get(
+  "/posts/:id/comments",
+  comment_controller.get_post_comments
+);
+
+// GET request to retrieve a specific comment based on ID
+router.get(
+  "/posts/:postId/comments/:commentId",
+  comment_controller.get_post_comment
+);
 
 /// ADMIN ROUTES ///
 

@@ -40,7 +40,7 @@ exports.create_comment = [
 ];
 
 // retrieve all comments for a specific post
-exports.get_comments = (req, res, next) => {
+exports.get_post_comments = (req, res, next) => {
   const postId = req.params.id;
 
   // find the post by id and populate the comments array
@@ -54,12 +54,38 @@ exports.get_comments = (req, res, next) => {
       if (err) {
         return next(err);
       }
+      if (!post) {
+        return res
+          .status(404)
+          .json({ err: `Post with id ${postId} not found` });
+      }
       // successful - return JSON object of the comments
       res.status(200).json(post.comments);
     });
 };
 
-// get_comment
+// retrieve a specfic comment base on ID
+exports.get_post_comment = (req, res, next) => {
+  const { postId, commentId } = req.params;
+
+  Comment.findById(commentId).exec((err, comment) => {
+    if (err) {
+      return next(err);
+    }
+    if (!comment) {
+      return res
+        .status(404)
+        .json({ err: `Comment with id ${commentId} not found` });
+    }
+    if (comment.postId !== postId) {
+      return res.status(404).json({
+        err: `Comment with id ${commentId} not found for this post`,
+      });
+    }
+    // successful - return JSON object of the comment
+    res.status(200).json(comment);
+  });
+};
 
 // update_comment
 
