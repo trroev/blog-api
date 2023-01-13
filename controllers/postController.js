@@ -61,6 +61,16 @@ exports.get_post = (req, res, next) => {
 
 // PUT update a specific post by its ID
 exports.update_post = (req, res, next) => {
+  // validate and sanitize fields
+  check("title", "Title is required").trim().notEmpty().escape();
+  check("content", "Content is required").trim().notEmpty().escape();
+  check("author", "Author is required").trim().notEmpty().escape();
+  // process request after validation and sanitization
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   Post.findByIdAndUpdate(
     req.params.id,
     req.body,
