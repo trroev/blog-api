@@ -87,7 +87,7 @@ exports.get_post_comment = (req, res, next) => {
   });
 };
 
-// update_comment
+// update a specific comment for a specific blog post
 exports.update_post_comment = (req, res, next) => {
   const { postId, commentId } = req.params;
   const { author, content } = req.body;
@@ -125,5 +125,28 @@ exports.update_post_comment = (req, res, next) => {
 };
 
 // delete_comment
+exports.delete_post_comment = (req, res, next) => {
+  const { postId, commentId } = req.params;
+
+  Comment.findByIdAndRemove(commentId, (err, comment) => {
+    if (err) {
+      return next(err);
+    }
+    if (!comment) {
+      return res
+        .status(404)
+        .json({ err: `Comment with id ${commentId} not found` });
+    }
+    if (comment.postId !== postId) {
+      return res.status(404).json({
+        err: `Comment with id ${commentId} not found for this post`,
+      });
+    }
+    // successful - return JSON message indicating the comment was deleted
+    res
+      .status(200)
+      .json({ msg: `Comment ${commentId} was successfully deleted` });
+  });
+};
 
 // delete_post_comments

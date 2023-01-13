@@ -59,6 +59,12 @@ router.put(
   comment_controller.update_post_comment
 );
 
+// DELETE request to delete a specific comment base on ID
+router.delete(
+  "/posts/:postId/comments/:commentId/delete",
+  comment_controller.delete_post_comment
+);
+
 /// ADMIN ROUTES ///
 
 // POST request to login the admin
