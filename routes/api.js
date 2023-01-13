@@ -12,6 +12,8 @@ router.get("/", (req, res, next) => {
   res.redirect("/api/posts");
 });
 
+/// POSTS ROUTES ///
+
 // POST request for creating a new blog post
 router.post(
   "/posts",
@@ -31,8 +33,15 @@ router.put("/posts/:id/update", post_controller.update_post);
 // POST request to delete a specific post based on ID
 router.delete("/posts/:id/delete", post_controller.delete_post);
 
+/// COMMENTS ROUTES ///
+
 // POST request for creating a comment on a blog post
-router.post("/posts/:id/comment", comment_controller.create_comment);
+router.post("/posts/:id/comments", comment_controller.create_comment);
+
+// GET request to retrieve all comments for a specific blog post
+router.get("/posts/:id/comments", comment_controller.get_comments);
+
+/// ADMIN ROUTES ///
 
 // POST request to login the admin
 router.post("/login", admin_controller.login);

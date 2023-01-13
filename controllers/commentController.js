@@ -39,7 +39,25 @@ exports.create_comment = [
   },
 ];
 
-// get_comments
+// retrieve all comments for a specific post
+exports.get_comments = (req, res, next) => {
+  const postId = req.params.id;
+
+  // find the post by id and populate the comments array
+  Post.findById(postId)
+    .populate({
+      path: "comments",
+      options: { sort: { createdAt: "descending" } },
+    })
+    .sort([["createdAt", "descending"]])
+    .exec((err, post) => {
+      if (err) {
+        return next(err);
+      }
+      // successful - return JSON object of the comments
+      res.status(200).json(post.comments);
+    });
+};
 
 // get_comment
 
