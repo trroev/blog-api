@@ -3,7 +3,7 @@ const Post = require("../models/post");
 const { check, validationResult } = require("express-validator");
 
 // create a comment for a specific post and add it to the database
-exports.create_comment = [
+exports.create_post_comment = [
   // validate and sanitize fields
   check("author", "Author is required").trim().notEmpty().escape(),
   check("content", "Content is required").trim().notEmpty().escape(),
@@ -88,6 +88,41 @@ exports.get_post_comment = (req, res, next) => {
 };
 
 // update_comment
+exports.update_post_comment = (req, res, next) => {
+  const { postId, commentId } = req.params;
+  const { author, content } = req.body;
+  // validate and sanitize fields
+  check("author", "Author is required").trim().notEmpty().escape();
+  check("content", "Content is required").trim().notEmpty().escape();
+  // process request after validation and sanitization
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  Comment.findByIdAndUpdate(
+    commentId,
+    req.body,
+    { new: true },
+    (err, comment) => {
+      if (err) {
+        return next(err);
+      }
+      if (!comment) {
+        return res
+          .status(404)
+          .json({ err: `Comment with id ${commentId} not found` });
+      }
+      if (comment.postId !== postId) {
+        return res.status(404).json({
+          err: `Comment with id ${commentId} not found for this post`,
+        });
+      }
+      // successful - return JSON object of updated comment
+      res.status(200).json(comment);
+    }
+  );
+};
 
 // delete_comment
 
