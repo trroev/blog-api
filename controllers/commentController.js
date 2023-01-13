@@ -124,7 +124,7 @@ exports.update_post_comment = (req, res, next) => {
   );
 };
 
-// delete_comment
+// delete a specific comment for a specific blog post
 exports.delete_post_comment = (req, res, next) => {
   const { postId, commentId } = req.params;
 
@@ -142,6 +142,17 @@ exports.delete_post_comment = (req, res, next) => {
         err: `Comment with id ${commentId} not found for this post`,
       });
     }
+    // find post and remove the deleted comment from the comment array
+    Post.findByIdAndUpdate(
+      postId,
+      { $pull: { comments: commentId } },
+      { new: true },
+      (err, post) => {
+        if (err) {
+          return next(err);
+        }
+      }
+    );
     // successful - return JSON message indicating the comment was deleted
     res
       .status(200)
@@ -150,3 +161,30 @@ exports.delete_post_comment = (req, res, next) => {
 };
 
 // delete_post_comments
+exports.delete_post_comments = (req, res, next) => {
+  const postId = req.params.postId;
+  Comment.deleteMany({ postId }, (err) => {
+    if (err) {
+      return next(err);
+    }
+    // find Post and remove deleted comments from the comment array
+    Post.findByIdAndUpdate(
+      { _id: postId },
+      { $pull: { comments: { postId } } },
+      (err, result) => {
+        if ((err, post)) {
+          return next(err);
+        }
+        if (!post) {
+          return res
+            .status(404)
+            .json({ err: `Post with id ${postId} was not found ` });
+        }
+      }
+    );
+    // successful - return JSON message indicating all comments were deleted
+    res
+      .status(200)
+      .json({ msg: "All comments were successfully deleted" });
+  });
+};

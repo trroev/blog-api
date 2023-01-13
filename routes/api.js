@@ -59,10 +59,16 @@ router.put(
   comment_controller.update_post_comment
 );
 
-// DELETE request to delete a specific comment base on ID
+// DELETE request to delete a specific comment based on ID
 router.delete(
   "/posts/:postId/comments/:commentId/delete",
   comment_controller.delete_post_comment
+);
+
+// DELETE request to delete ALL comments on a blog post
+router.delete(
+  "/posts/:postId/comments/delete",
+  comment_controller.delete_post_comments
 );
 
 /// ADMIN ROUTES ///
