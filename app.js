@@ -10,12 +10,12 @@ const apiRouter = require("./routes/api");
 
 const app = express();
 
-// initialize passport and use it in the app
-app.use(passport.initialize());
-
 // set up middleware
 app.use(cors());
 app.use(express.json());
+
+// initialize passport and use it in the app
+app.use(passport.initialize());
 
 // set up routes
 app.use("/", indexRouter);

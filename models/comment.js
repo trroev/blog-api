@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { DateTime } = require("luxon");
 
 const CommentSchema = new mongoose.Schema({
+  postId: {
+    type: String,
+    required: true,
+  },
   author: {
     type: String,
     required: true,

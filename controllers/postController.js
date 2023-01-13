@@ -9,8 +9,6 @@ exports.create_post = [
   check("author", "Author is required").trim().notEmpty().escape(),
   // process request after validation and sanitization
   (req, res, next) => {
-    console.log("start of create_post function");
-    console.log("Received request body", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -18,21 +16,14 @@ exports.create_post = [
 
     // extract the post data from the request body
     const { title, content, author } = req.body;
-    console.log("Creating new post with data:", {
-      title,
-      content,
-      author,
-    });
     // create a new Post object with escaped and trimmed data
     const post = new Post({ title, content, author });
 
     // save the Post to the database
     post.save((err) => {
       if (err) {
-        console.log("Error occured:", err);
         return next(err);
       }
-      console.log("Saved post to the database:", post);
       // successful - return the created post to the client
       res.status(200).json(post);
     });
@@ -106,7 +97,3 @@ exports.delete_post = (req, res, next) => {
     });
   });
 };
-
-// GET - retrieve a list of all published or unpublished posts
-
-// GET - retrieve a list of all posts sorted by a specific field (e.g. title, date)
