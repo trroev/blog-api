@@ -1,4 +1,5 @@
 const Admin = require("../models/admin");
+const Blacklist = require("../models/blacklist");
 const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res, next) => {
@@ -26,10 +27,16 @@ exports.login = async (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(200).json({ msg: "Logout Successful" });
-  });
+  try {
+    // get the jwt from the headers
+    const token = req.headers.authorization;
+
+    // invalidate the token by making it blacklisted
+    Blacklist.create({ token });
+
+    // successful - return a JSON message indicating the logout was a success
+    res.status(200).json({ msg: "Logout successful" });
+  } catch (err) {
+    return next(err);
+  }
 };
