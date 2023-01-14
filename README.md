@@ -1,6 +1,6 @@
 # BLOG API
 
-The goal of this project was to build a RESTful API that can be used to build a blog client and CMS. The app uses Passport authentication using JSON web tokens. Overall it was a great learning experience for creating RESTful APIs and API security.
+The objective of this project was to construct a RESTful API that serves as a foundation for a blog client and content management system (CMS). This included implementing Passport authentication utilizing JSON web tokens to ensure secure access to the API. Through this project, I gained valuable experience in creating RESTful APIs and implementing secure API practices.
 
 ## How It's Made:
 
