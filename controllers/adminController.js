@@ -23,20 +23,28 @@ exports.login = async (req, res, next) => {
   });
 
   // return the token to the client
-  res.json({ token });
+  res.status(200).json({ msg: "Login successful", token });
 };
 
 exports.logout = (req, res, next) => {
   try {
     // get the jwt from the headers
-    const token = req.headers.authorization;
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.decode(token);
+    const expiresAt = new Date(decoded.exp * 1000);
 
     // invalidate the token by making it blacklisted
-    Blacklist.create({ token });
+    Blacklist.create({ token, expiresAt });
 
     // successful - return a JSON message indicating the logout was a success
     res.status(200).json({ msg: "Logout successful" });
   } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expired" });
+    } else if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
     return next(err);
   }
 };

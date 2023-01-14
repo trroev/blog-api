@@ -28,10 +28,18 @@ router.get("/posts", post_controller.get_posts);
 router.get("/posts/:id", post_controller.get_post);
 
 // PUT request for updating a specific post based on ID
-router.put("/posts/:id/update", post_controller.update_post);
+router.put(
+  "/posts/:id/update",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.update_post
+);
 
 // POST request to delete a specific post based on ID
-router.delete("/posts/:id/delete", post_controller.delete_post);
+router.delete(
+  "/posts/:id/delete",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.delete_post
+);
 
 /// COMMENTS ROUTES ///
 
@@ -56,18 +64,21 @@ router.get(
 // PUT request for updating a specific comment based on ID
 router.put(
   "/posts/:postId/comments/:commentId/update",
+  passport.authenticate("jwt", { session: false }),
   comment_controller.update_post_comment
 );
 
 // DELETE request to delete a specific comment based on ID
 router.delete(
   "/posts/:postId/comments/:commentId/delete",
+  passport.authenticate("jwt", { session: false }),
   comment_controller.delete_post_comment
 );
 
 // DELETE request to delete ALL comments on a blog post
 router.delete(
   "/posts/:postId/comments/delete",
+  passport.authenticate("jwt", { session: false }),
   comment_controller.delete_post_comments
 );
 
